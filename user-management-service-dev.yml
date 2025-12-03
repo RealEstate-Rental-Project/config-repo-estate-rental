@@ -1,5 +1,7 @@
 spring:
-  profiles: dev
+  config:
+    activate:
+        on-profile: dev
   datasource:
     url: ${DEV_DB_URL:jdbc:h2:mem:userdb}
     driver-class-name: org.h2.Driver
