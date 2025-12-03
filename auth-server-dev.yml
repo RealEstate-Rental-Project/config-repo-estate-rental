@@ -3,9 +3,3 @@ spring:
     activate:
       on-profile: dev
 
-logging:
-  level:
-    org.springframework.security: DEBUG
-    org.springframework.security.oauth2: DEBUG
-    ma.fstt.authserver: DEBUG
-    feign: DEBUG
