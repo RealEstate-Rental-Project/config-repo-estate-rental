@@ -29,6 +29,14 @@ spring:
           predicates:
             - Path=/api/auth/**
 
+        - id: user-register
+          uri: lb://USER-MANAGEMENT-SERVICE
+          predicates:
+            - Path=/api/users
+          filters:
+            - RemoveRequestHeader=Cookie
+
+
         - id: user-service
           uri: lb://USER-MANAGEMENT-SERVICE
           predicates:
