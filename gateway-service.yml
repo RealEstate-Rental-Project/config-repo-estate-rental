@@ -79,8 +79,7 @@ spring:
 
 logging:
   level:
-    root: ERROR
-    org.springframework.cloud.gateway: ERROR
-    org.springframework.web: ERROR
-    org.springframework.security: ERROR
-    reactor.netty.http.server: ERROR   # <- pour les erreurs HTTP côté serveur Netty
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+    org.springframework.web.cors: DEBUG
+    root: DEBUG
