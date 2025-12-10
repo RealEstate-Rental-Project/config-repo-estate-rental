@@ -79,7 +79,7 @@ spring:
 
 logging:
   level:
-    org.springframework.cloud.gateway: DEBUG
-    org.springframework.security: DEBUG
-    org.springframework.web.cors: DEBUG
-    root: DEBUG
+    org.springframework.cloud.gateway: ERROR
+    org.springframework.security: ERROR
+    org.springframework.web.cors: ERROR
+    root: ERROR
