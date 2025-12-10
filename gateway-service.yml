@@ -36,6 +36,7 @@ spring:
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
           predicates:
             - Path=/api/users
+            - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
 
@@ -43,7 +44,7 @@ spring:
         - id: user-service
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
           predicates:
-            - Path=/api/users/**
+            - Path=/api/users/**,/api/users
 
         - id: RentalAgreement-microservice
           uri: ${RENTAL-AGREEMENT-URL:http://localhost:8083}
