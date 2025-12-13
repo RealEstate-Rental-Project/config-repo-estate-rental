@@ -67,16 +67,35 @@ spring:
             - Path=/api/users/wallet/**
             - Method=GET
 
-        - id: user-list-public
+        - id: user-nonce
+          uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
+          predicates:
+            - Path=/api/users/nonce
+            - Method=POST,DELETE,GET
+
+        - id: user-list-protected
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
           predicates:
             - Path=/api/users
             - Method=GET
+          filters:
+              - TokenRelay
 
-        - id: user-service-protected
+            # Protected: update user
+        - id: user-update-protected
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
           predicates:
-            - Path=/api/users/**
+            - Path=/api/users/{id}
+            - Method=PATCH
+          filters:
+            - TokenRelay
+
+            # Protected: delete user
+        - id: user-delete-protected
+          uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
+          predicates:
+            - Path=/api/users/{id}
+            - Method=DELETE
           filters:
             - TokenRelay
 
