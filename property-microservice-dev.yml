@@ -1,6 +1,6 @@
 spring:
   datasource:
-    url: ${DEV_DB_NOTIFICATION_URL:jdbc:h2:mem:propertydb}
+    url: ${DEV_DB_PROPERTY_URL:jdbc:h2:mem:propertydb}
     driver-class-name: org.h2.Driver
     username: sa
     password:
