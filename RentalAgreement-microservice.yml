@@ -22,9 +22,23 @@ property:
   service:
     url: ${PROPERTY_SERVICE_URL:http://localhost:8084}
 
+
+resilience4j:
+  circuitbreaker:
+    instances:
+      propertyService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        permittedNumberOfCallsInHalfOpenState: 3
+        slidingWindowType: COUNT_BASED
+        minimumNumberOfCalls: 5
+        waitDurationInOpenState: 5s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+
 tenantScoringAiModel:
   service:
-    url: localhost:8080
+    url: ${TENANT_SCORING_IA_MODEL_URL:localhost:8080}
 
 # Logging
 logging:
