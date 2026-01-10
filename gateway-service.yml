@@ -31,6 +31,7 @@ spring:
           filters:
             - StripPrefix=0
 
+
         - id: auth-login-route
           uri: ${AUTH_SERVER_URL:http://localhost:9000}
           predicates:
@@ -38,6 +39,8 @@ spring:
             - Method=POST
           filters:
             - StripPrefix=0
+
+
 
         - id: auth-refresh-route
           uri: ${AUTH_SERVER_URL:http://localhost:9000}
@@ -47,10 +50,12 @@ spring:
           filters:
             - StripPrefix=0
 
+
         - id: auth-server-public
           uri: ${AUTH_SERVER_URL:http://localhost:9000}
           predicates:
             - Path=/oauth2/**,/.well-known/**
+
 
         # ------------------------ USER SERVICE ROUTES ------------------------
         - id: user-register
@@ -60,18 +65,33 @@ spring:
             - Method=POST
           filters:
             - RemoveRequestHeader=Cookie
+            - name: CircuitBreaker
+              args:
+                name: userService
+                fallbackUri: forward:/fallback/user
 
         - id: user-wallet-public
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
           predicates:
             - Path=/api/users/wallet/**
             - Method=GET
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: userService
+                fallbackUri: forward:/fallback/user
 
         - id: user-nonce
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
           predicates:
             - Path=/api/users/nonce
             - Method=POST,DELETE,GET
+          filters:
+            - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: userService
+                fallbackUri: forward:/fallback/user
 
         - id: user-list-protected
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
@@ -80,7 +100,10 @@ spring:
             - Method=GET
           filters:
             - TokenRelay
-
+            - name: CircuitBreaker
+              args:
+                name: userService
+                fallbackUri: forward:/fallback/user
             # Protected: update user
         - id: user-update-protected
           uri: ${USER-MANAGEMENT-SERVICE-URL:http://localhost:8081}
@@ -89,6 +112,10 @@ spring:
             - Method=PATCH
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: userService
+                fallbackUri: forward:/fallback/user
 
             # Protected: delete user
         - id: user-delete-protected
@@ -98,6 +125,10 @@ spring:
             - Method=DELETE
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: userService
+                fallbackUri: forward:/fallback/user
 
         # ------------------------ RENTAL AGREEMENT ------------------------
         - id: rental-agreement-microservice
@@ -106,6 +137,11 @@ spring:
             - Path=/api/rentalAgreement-microservice/**
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: rentalAgreementService
+                fallbackUri: forward:/fallback/rental-agreement
+
 
         # ------------------------ PROPERTY MICROSERVICE ------------------------
         - id: property-microservice-get-public
@@ -113,6 +149,11 @@ spring:
           predicates:
             - Path=/api/property-microservice/**
             - Method=GET
+          filters:
+            - name: CircuitBreaker
+              args:
+                name: propertyService
+                fallbackUri: forward:/fallback/property
 
         - id: property-microservice-protected
           uri: ${PROPERTY-MICROSERVICE-URL:http://localhost:8084}
@@ -120,6 +161,10 @@ spring:
             - Path=/api/property-microservice/**
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: propertyService
+                fallbackUri: forward:/fallback/property
 
         # =========================
         # Notifications REST
@@ -130,6 +175,10 @@ spring:
             - Path=/api/notifications/**
           filters:
             - TokenRelay
+            - name: CircuitBreaker
+              args:
+                name: notificationService
+                fallbackUri: forward:/fallback/notification
 
         # =========================
         # Notifications WebSocket
@@ -161,8 +210,37 @@ spring:
             allowCredentials: true
             maxAge: 3600
 
+resilience4j:
+  circuitbreaker:
+    configs:
+      default:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+        slidingWindowType: COUNT_BASED
+    instances:
+      notificationService:
+        baseConfig: default
+        slidingWindowSize: 15
+        failureRateThreshold: 40
+      rentalAgreementService:
+        baseConfig: default
+      propertyService:
+        baseConfig: default
+      userService:
+        baseConfig: default
+      authService:
+        baseConfig: default
+
+
 logging:
   level:
+    io.github.resilience4j.circuitbreaker: DEBUG
     org.springframework.cloud.gateway: DEBUG
     org.springframework.security: DEBUG
     org.springframework.web.cors: DEBUG
