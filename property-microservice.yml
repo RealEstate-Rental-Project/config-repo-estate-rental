@@ -50,4 +50,4 @@ microservice:
 
 userManagement:
   service:
-    url: ${USER_MANAGEMENT_SERVICE_URL:http://localhost:8084}
+    url: ${USER_MANAGEMENT_SERVICE_URL:http://localhost:8081}
