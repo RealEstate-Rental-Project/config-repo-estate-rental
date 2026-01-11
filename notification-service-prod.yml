@@ -4,10 +4,24 @@ spring:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${PROD_DB_USERNAME:root}
     password: ${PROD_DB_PASSWORD:password}
+
   jpa:
+    show-sql: true
     hibernate:
-      ddl-auto: validate
-    show-sql: false
+      ddl-auto: update
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
-        dialect: org.hibernate.dialect.MySQL8Dialect
+        dialect: org.hibernate.dialect.MySQLDialect
+        format_sql: true
+
+logging:
+  level:
+    org:
+      hibernate:
+        SQL: DEBUG
+        type:
+          descriptor:
+            sql:
+              BasicExtractor: TRACE
