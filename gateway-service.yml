@@ -14,6 +14,9 @@ spring:
 
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 5s
       discovery:
         locator:
           enabled: false
@@ -221,22 +224,30 @@ resilience4j:
         automaticTransitionFromOpenToHalfOpenEnabled: true
         waitDurationInOpenState: 10s
         failureRateThreshold: 50
-        eventConsumerBufferSize: 10
         slidingWindowType: COUNT_BASED
     instances:
-      notificationService:
-        baseConfig: default
-        slidingWindowSize: 15
-        failureRateThreshold: 40
-      rentalAgreementService:
-        baseConfig: default
       propertyService:
         baseConfig: default
       userService:
         baseConfig: default
-      authService:
+      notificationService:
+        baseConfig: default
+      rentalAgreementService:
         baseConfig: default
 
+  timelimiter:
+    configs:
+      default:
+        timeoutDuration: 5s # C'est ici qu'on définit les 5 secondes
+    instances: # <--- CRUCIAL : Il faut lier les instances ici aussi !
+      propertyService:
+        baseConfig: default
+      userService:
+        baseConfig: default
+      notificationService:
+        baseConfig: default
+      rentalAgreementService:
+        baseConfig: default
 
 logging:
   level:
