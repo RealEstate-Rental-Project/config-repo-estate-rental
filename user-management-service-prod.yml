@@ -5,7 +5,7 @@ spring:
   datasource:
     url: ${PROD_DB_URL:jdbc:mysql://localhost:3306/userdb?createDatabaseIfNotExist=true&useSSL=false}
     username: ${PROD_DB_USERNAME:root}
-    password: ${PROD_DB_PASSWORD:}
+    password: ${PROD_DB_PASSWORD:root}
     driver-class-name: com.mysql.cj.jdbc.Driver
 
   jpa:
