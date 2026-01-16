@@ -8,7 +8,6 @@ The system is built on a microservices architecture where each service retrieves
 
 - **Config Server:** `config-service-rental-estate`
 - **Config Storage:** This repository (`config-repo-estate-rental`)
-- **Discovery Service:** Eureka Server
 - **API Gateway:** Spring Cloud Gateway
 
 ## 📂 Configuration Hierarchy
@@ -37,7 +36,6 @@ Configurations are organized using a hierarchical structure:
 | **Property Service** | `property-microservice.yml` | Manages real estate listings and property data. |
 | **Rental Agreement** | `RentalAgreement-microservice.yml` | Handles smart contracts, blockchain interaction (Web3j), and Kafka messaging for agreements. |
 | **Notification** | `notification-service.yml` | Manages system notifications via REST and WebSocket. |
-| **Eureka Service** | `eureka-service.yml` | Service discovery and registry settings. |
 
 ## 🚀 Key Technologies Configured
 
